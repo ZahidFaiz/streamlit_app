@@ -5,6 +5,7 @@ import pandas as pd
 class data_prep:
     def __init__(self, file_path) -> None:
         self.df = self.load_data(file_path)
+        self.df["order"] = self.df["Time Period"].map({'Jan-23' : 0, 'Feb-23' : 1, 'Mar-23' : 2, 'Apr-23' : 3, 'May-23' : 4, 'Jun-23' : 5})
 
     def load_data(self, file_path):
         return pd.read_csv(file_path)
@@ -22,10 +23,10 @@ class data_prep:
         return self.filter_df 
 
     def bar_chart1_df(self):
-        return self.filter_df.groupby(['Product Name', 'Time Period']).agg({
+        return self.filter_df.groupby(['Product Name', 'Time Period', "order"]).agg({
             "Patient Count" : "sum", 
             "Claims volume" : "sum"
-        }).reset_index()
+        }).reset_index().sort_values("order")
     
     def bar_chart2_df(self):
         return self.filter_df.groupby(['Geography Location']).agg({
